@@ -4,6 +4,8 @@ using BattleTech;
 using System.IO;
 using System.Collections.Generic;
 
+
+
 namespace DontShootTheDead
 {
     public class DontShootTheDead
@@ -12,7 +14,7 @@ namespace DontShootTheDead
         public static string ModDirectory;
 
         // BEN: Debug (0: nothing, 1: errors, 2:all)
-        internal static int DebugLevel = 2;
+        internal static int DebugLevel = 1;
 
         public static void Init(string directory, string settingsJSON)
         {
@@ -31,7 +33,7 @@ namespace DontShootTheDead
     {
         public static void Prefix(MechMeleeSequence __instance, ref List<Weapon> ___requestedWeapons)
         {
-            // Get melee target
+            AbstractActor actor = __instance.owningActor;
             ICombatant MeleeTarget = (ICombatant)AccessTools.Property(typeof(MechMeleeSequence), "MeleeTarget").GetValue(__instance, null);
 
             bool TargetIsAlreadyDead = MeleeTarget.IsFlaggedForDeath;
@@ -40,6 +42,7 @@ namespace DontShootTheDead
             if (TargetIsAlreadyDead)
             {
                 ___requestedWeapons.Clear();
+                actor.Combat.MessageCenter.PublishMessage(new FloatieMessage(actor.GUID, actor.GUID, "SUSPENDED SUPPORT WEAPONS", FloatieMessage.MessageNature.Neutral));
             }
         }
     }
@@ -50,9 +53,14 @@ namespace DontShootTheDead
     {
         public static void Prefix(MechMeleeSequence __instance, ref float timeout)
         {
-            // Was 5f
+            // Was a hardcoded 5f
             timeout = 1f;
-            Logger.LogLine("[MechMeleeSequence_DelayFireWeapons_PREFIX] New timeout: " + timeout);
+            Logger.LogLine("[MechMeleeSequence_DelayFireWeapons_PREFIX] Timeout: " + timeout);
+        }
+
+        public static void Postfix(MechMeleeSequence __instance, float timeout)
+        {
+            Logger.LogLine("[MechMeleeSequence_DelayFireWeapons_POSTFIX] CHECK Timeout: " + timeout);
         }
     }
 }
