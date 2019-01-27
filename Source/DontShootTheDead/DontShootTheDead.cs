@@ -54,7 +54,7 @@ namespace DontShootTheDead
         public static void Prefix(MechMeleeSequence __instance, ref float timeout)
         {
             // Was a hardcoded 5f
-            timeout = 1f;
+            timeout = 2f;
             Logger.LogLine("[MechMeleeSequence_DelayFireWeapons_PREFIX] Timeout: " + timeout);
         }
 
