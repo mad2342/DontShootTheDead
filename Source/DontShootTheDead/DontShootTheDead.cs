@@ -33,6 +33,13 @@ namespace DontShootTheDead
     {
         public static void Prefix(MechMeleeSequence __instance, ref List<Weapon> ___requestedWeapons)
         {
+            // Skipping if no antipersonnel weapons are available
+            if (___requestedWeapons.Count < 1)
+            {
+                Logger.LogLine("[MechMeleeSequence_FireWeapons_PREFIX] No antipersonnel weapons available. Exit.");
+                return;
+            }
+
             AbstractActor actor = __instance.owningActor;
             ICombatant MeleeTarget = (ICombatant)AccessTools.Property(typeof(MechMeleeSequence), "MeleeTarget").GetValue(__instance, null);
 
