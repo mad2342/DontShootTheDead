@@ -28,6 +28,7 @@ namespace DontShootTheDead
         }
     }
 
+    // Melee
     [HarmonyPatch(typeof(MechMeleeSequence), "FireWeapons")]
     public static class MechMeleeSequence_FireWeapons_Patch
     {
@@ -54,7 +55,6 @@ namespace DontShootTheDead
         }
     }
 
-    // Reduce delay before shooting weapons after melee attack
     [HarmonyPatch(typeof(MechMeleeSequence), "DelayFireWeapons")]
     public static class MechMeleeSequence_DelayFireWeapons_Patch
     {
@@ -68,6 +68,49 @@ namespace DontShootTheDead
         public static void Postfix(MechMeleeSequence __instance, float timeout)
         {
             Logger.LogLine("[MechMeleeSequence_DelayFireWeapons_POSTFIX] CHECK Timeout: " + timeout);
+        }
+    }
+
+    // DFA
+    [HarmonyPatch(typeof(MechDFASequence), "FireWeapons")]
+    public static class MechDFASequence_FireWeapons_Patch
+    {
+        public static void Prefix(MechDFASequence __instance, ref List<Weapon> ___requestedWeapons)
+        {
+            // Skipping if no antipersonnel weapons are available
+            if (___requestedWeapons.Count < 1)
+            {
+                Logger.LogLine("[MechDFASequence_FireWeapons_PREFIX] No antipersonnel weapons available. Exit.");
+                return;
+            }
+
+            AbstractActor actor = __instance.owningActor;
+            ICombatant DFATarget = (ICombatant)AccessTools.Property(typeof(MechDFASequence), "DFATarget").GetValue(__instance, null);
+
+            bool TargetIsAlreadyDead = DFATarget.IsFlaggedForDeath;
+            Logger.LogLine("[MechDFASequence_FireWeapons_PREFIX] TargetIsAlreadyDead: " + TargetIsAlreadyDead);
+
+            if (TargetIsAlreadyDead)
+            {
+                ___requestedWeapons.Clear();
+                actor.Combat.MessageCenter.PublishMessage(new FloatieMessage(actor.GUID, actor.GUID, "SUSPENDED SUPPORT WEAPONS", FloatieMessage.MessageNature.Neutral));
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(MechDFASequence), "DelayFireWeapons")]
+    public static class MechDFASequence_DelayFireWeapons_Patch
+    {
+        public static void Prefix(MechDFASequence __instance, ref float timeout)
+        {
+            // Was a hardcoded 10f
+            timeout = 5f;
+            Logger.LogLine("[MechDFASequence_DelayFireWeapons_PREFIX] Timeout: " + timeout);
+        }
+
+        public static void Postfix(MechDFASequence __instance, float timeout)
+        {
+            Logger.LogLine("[MechDFASequence_DelayFireWeapons_POSTFIX] CHECK Timeout: " + timeout);
         }
     }
 }
