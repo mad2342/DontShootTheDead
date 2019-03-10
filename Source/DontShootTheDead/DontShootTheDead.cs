@@ -104,7 +104,7 @@ namespace DontShootTheDead
         public static void Prefix(MechDFASequence __instance, ref float timeout)
         {
             // Was a hardcoded 10f
-            timeout = 5f;
+            timeout = 4f;
             Logger.LogLine("[MechDFASequence_DelayFireWeapons_PREFIX] Timeout: " + timeout);
         }
 
