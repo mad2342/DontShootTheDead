@@ -4,26 +4,24 @@ using BattleTech;
 using System.IO;
 using System.Collections.Generic;
 
-
-
 namespace DontShootTheDead
 {
     public class DontShootTheDead
     {
-        public static string LogPath;
-        public static string ModDirectory;
+        internal static string LogPath;
+        internal static string ModDirectory;
 
-        // BEN: Debug (0: nothing, 1: errors, 2:all)
-        internal static int DebugLevel = 2;
+        // BEN: DebugLevel (0: nothing, 1: error, 2: debug, 3: info)
+        internal static int DebugLevel = 3;
 
-        public static void Init(string directory, string settingsJSON)
+        public static void Init(string directory, string settings)
         {
             ModDirectory = directory;
-
             LogPath = Path.Combine(ModDirectory, "DontShootTheDead.log");
-            File.CreateText(DontShootTheDead.LogPath);
 
-            var harmony = HarmonyInstance.Create("de.mad.DontShootTheDead");
+            Logger.Initialize(LogPath, DebugLevel, ModDirectory, nameof(DontShootTheDead));
+
+            HarmonyInstance harmony = HarmonyInstance.Create("de.mad.DontShootTheDead");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
     }
@@ -37,7 +35,7 @@ namespace DontShootTheDead
             // Skipping if no antipersonnel weapons are available
             if (___requestedWeapons.Count < 1)
             {
-                Logger.LogLine("[MechMeleeSequence_FireWeapons_PREFIX] No antipersonnel weapons available. Exit.");
+                Logger.Info("[MechMeleeSequence_FireWeapons_PREFIX] No antipersonnel weapons available. Exit.");
                 return;
             }
 
@@ -45,7 +43,7 @@ namespace DontShootTheDead
             ICombatant MeleeTarget = (ICombatant)AccessTools.Property(typeof(MechMeleeSequence), "MeleeTarget").GetValue(__instance, null);
 
             bool TargetIsAlreadyDead = MeleeTarget.IsFlaggedForDeath;
-            Logger.LogLine("[MechMeleeSequence_FireWeapons_PREFIX] TargetIsAlreadyDead: " + TargetIsAlreadyDead);
+            Logger.Info("[MechMeleeSequence_FireWeapons_PREFIX] TargetIsAlreadyDead: " + TargetIsAlreadyDead);
 
             if (TargetIsAlreadyDead)
             {
@@ -62,14 +60,16 @@ namespace DontShootTheDead
         {
             // Was a hardcoded 5f
             timeout = 2f;
-            Logger.LogLine("[MechMeleeSequence_DelayFireWeapons_PREFIX] Timeout: " + timeout);
+            Logger.Debug("[MechMeleeSequence_DelayFireWeapons_PREFIX] SET Timeout: " + timeout);
         }
 
         public static void Postfix(MechMeleeSequence __instance, float timeout)
         {
-            Logger.LogLine("[MechMeleeSequence_DelayFireWeapons_POSTFIX] CHECK Timeout: " + timeout);
+            Logger.Debug("[MechMeleeSequence_DelayFireWeapons_POSTFIX] CHECK Timeout: " + timeout);
         }
     }
+
+
 
     // DFA
     [HarmonyPatch(typeof(MechDFASequence), "FireWeapons")]
@@ -80,7 +80,7 @@ namespace DontShootTheDead
             // Skipping if no antipersonnel weapons are available
             if (___requestedWeapons.Count < 1)
             {
-                Logger.LogLine("[MechDFASequence_FireWeapons_PREFIX] No antipersonnel weapons available. Exit.");
+                Logger.Debug("[MechDFASequence_FireWeapons_PREFIX] No antipersonnel weapons available. Exit.");
                 return;
             }
 
@@ -88,7 +88,7 @@ namespace DontShootTheDead
             ICombatant DFATarget = (ICombatant)AccessTools.Property(typeof(MechDFASequence), "DFATarget").GetValue(__instance, null);
 
             bool TargetIsAlreadyDead = DFATarget.IsFlaggedForDeath;
-            Logger.LogLine("[MechDFASequence_FireWeapons_PREFIX] TargetIsAlreadyDead: " + TargetIsAlreadyDead);
+            Logger.Info("[MechDFASequence_FireWeapons_PREFIX] TargetIsAlreadyDead: " + TargetIsAlreadyDead);
 
             if (TargetIsAlreadyDead)
             {
@@ -105,12 +105,12 @@ namespace DontShootTheDead
         {
             // Was a hardcoded 10f
             timeout = 4f;
-            Logger.LogLine("[MechDFASequence_DelayFireWeapons_PREFIX] Timeout: " + timeout);
+            Logger.Debug("[MechDFASequence_DelayFireWeapons_PREFIX] SET Timeout: " + timeout);
         }
 
         public static void Postfix(MechDFASequence __instance, float timeout)
         {
-            Logger.LogLine("[MechDFASequence_DelayFireWeapons_POSTFIX] CHECK Timeout: " + timeout);
+            Logger.Debug("[MechDFASequence_DelayFireWeapons_POSTFIX] CHECK Timeout: " + timeout);
         }
     }
 }
