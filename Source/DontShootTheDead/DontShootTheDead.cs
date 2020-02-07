@@ -12,7 +12,7 @@ namespace DontShootTheDead
         internal static string ModDirectory;
 
         // BEN: DebugLevel (0: nothing, 1: error, 2: debug, 3: info)
-        internal static int DebugLevel = 3;
+        internal static int DebugLevel = 1;
 
         public static void Init(string directory, string settings)
         {
