@@ -49,6 +49,9 @@ namespace DontShootTheDead
             {
                 ___requestedWeapons.Clear();
                 actor.Combat.MessageCenter.PublishMessage(new FloatieMessage(actor.GUID, actor.GUID, "SUSPENDED SUPPORT WEAPONS", FloatieMessage.MessageNature.Neutral));
+
+                // @ToDo: Re-Add Ammo which was substracted early at Weapon.PreFire()
+                // @ToDo: Check if heat needs to be substracted too... ()
             }
         }
     }
@@ -59,7 +62,7 @@ namespace DontShootTheDead
         public static void Prefix(MechMeleeSequence __instance, ref float timeout)
         {
             // Was a hardcoded 5f
-            timeout = 2f;
+            timeout = 3f;
             Logger.Debug("[MechMeleeSequence_DelayFireWeapons_PREFIX] SET Timeout: " + timeout);
         }
 
@@ -94,6 +97,9 @@ namespace DontShootTheDead
             {
                 ___requestedWeapons.Clear();
                 actor.Combat.MessageCenter.PublishMessage(new FloatieMessage(actor.GUID, actor.GUID, "SUSPENDED SUPPORT WEAPONS", FloatieMessage.MessageNature.Neutral));
+
+                // @ToDo: Re-Add Ammo which was substracted early at Weapon.PreFire()
+                // @ToDo: Check if heat needs to be substracted too... ()
             }
         }
     }
@@ -104,7 +110,7 @@ namespace DontShootTheDead
         public static void Prefix(MechDFASequence __instance, ref float timeout)
         {
             // Was a hardcoded 10f
-            timeout = 4f;
+            timeout = 6f;
             Logger.Debug("[MechDFASequence_DelayFireWeapons_PREFIX] SET Timeout: " + timeout);
         }
 
