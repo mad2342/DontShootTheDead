@@ -22,6 +22,7 @@ namespace DontShootTheDead.Extensions
             if (hasInternalAmmo)
             {
                 Logger.Info($"[WeaponExtensions_IncrementAmmo] ({weapon.Name}) Current internal ammo: {weapon.InternalAmmo}");
+
                 if ((weapon.InternalAmmo + shotsToAdd) >= maxInternalAmmo)
                 {
                     weapon.StatCollection.ModifyStat<int>(weapon.uid, stackItemUID, "InternalAmmo", StatCollection.StatOperation.Set, maxInternalAmmo, -1, true);
@@ -30,7 +31,9 @@ namespace DontShootTheDead.Extensions
                 {
                     weapon.StatCollection.ModifyStat<int>(weapon.uid, stackItemUID, "InternalAmmo", StatCollection.StatOperation.Int_Add, shotsToAdd, -1, true);
                 }
+
                 Logger.Info($"[WeaponExtensions_IncrementAmmo] ({weapon.Name}) Updated internal ammo: {weapon.InternalAmmo}");
+
                 return;
             }
 

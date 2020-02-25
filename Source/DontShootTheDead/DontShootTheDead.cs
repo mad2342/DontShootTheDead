@@ -48,9 +48,8 @@ namespace DontShootTheDead
 
             if (TargetIsAlreadyDead)
             {
-                // @ToDo: Re-Add Ammo which was substracted early at Weapon.PreFire() (/)
-                // @ToDo: Check if heat needs to be substracted too... ()
-
+                // As there is a function "Weapon.PreFireWeapon()" which substracts Ammo before the weapon actually fired we need to re-add it here!
+                // @ToDo: Check if heat needs to be substracted again, too...
                 foreach (Weapon w in ___requestedWeapons)
                 {
                     w.IncrementAmmo();
