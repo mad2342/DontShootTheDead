@@ -3,6 +3,7 @@ using Harmony;
 using BattleTech;
 using System.IO;
 using System.Collections.Generic;
+using DontShootTheDead.Extensions;
 
 namespace DontShootTheDead
 {
@@ -47,11 +48,16 @@ namespace DontShootTheDead
 
             if (TargetIsAlreadyDead)
             {
+                // @ToDo: Re-Add Ammo which was substracted early at Weapon.PreFire() (/)
+                // @ToDo: Check if heat needs to be substracted too... ()
+
+                foreach (Weapon w in ___requestedWeapons)
+                {
+                    w.IncrementAmmo();
+                }
+
                 ___requestedWeapons.Clear();
                 actor.Combat.MessageCenter.PublishMessage(new FloatieMessage(actor.GUID, actor.GUID, "SUSPENDED SUPPORT WEAPONS", FloatieMessage.MessageNature.Neutral));
-
-                // @ToDo: Re-Add Ammo which was substracted early at Weapon.PreFire()
-                // @ToDo: Check if heat needs to be substracted too... ()
             }
         }
     }
