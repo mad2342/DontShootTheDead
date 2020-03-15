@@ -5,7 +5,6 @@
 ## Gameplay changes
 - Attacking Mechs won't shoot their short range weapons if the target already died from the melee attack
 - Additionally the delay between a melee attack and the following weapons fire (if applicable) is significantly reduced
-	- Timeout reduced from five seconds to one second
 
 ## Thanks
 * janxious
