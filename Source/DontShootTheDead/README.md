@@ -1,6 +1,6 @@
 # Don't Shoot The Dead
 
-[Battletech Mod][ModTek] Mechs won't waste heat or ammo on already killed targets  while in melee.
+[Battletech Mod][ModTek] Mechs won't waste heat or ammo on already killed targets while in melee.
 
 ## Gameplay changes
 - Attacking Mechs won't shoot their short range weapons if the target already died from the melee attack
