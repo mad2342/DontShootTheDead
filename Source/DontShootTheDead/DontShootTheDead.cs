@@ -41,19 +41,27 @@ namespace DontShootTheDead
             }
 
             AbstractActor actor = __instance.owningActor;
-            ICombatant MeleeTarget = (ICombatant)AccessTools.Property(typeof(MechMeleeSequence), "MeleeTarget").GetValue(__instance, null);
+            //ICombatant MeleeTarget = (ICombatant)AccessTools.Property(typeof(MechMeleeSequence), "MeleeTarget").GetValue(__instance, null);
+            ICombatant MeleeTarget = __instance.MeleeTarget;
 
-            bool TargetIsAlreadyDead = MeleeTarget.IsFlaggedForDeath;
-            Logger.Info("[MechMeleeSequence_FireWeapons_PREFIX] TargetIsAlreadyDead: " + TargetIsAlreadyDead);
+            bool TargetIsFlaggedForDeath = MeleeTarget.IsFlaggedForDeath;
+            bool TargetIsDead = MeleeTarget.IsDead;
 
-            if (TargetIsAlreadyDead)
+            Logger.Info("[MechMeleeSequence_FireWeapons_PREFIX] TargetIsFlaggedForDeath: " + TargetIsFlaggedForDeath);
+            Logger.Info("[MechMeleeSequence_FireWeapons_PREFIX] TargetIsDead: " + TargetIsDead);
+
+            if (TargetIsFlaggedForDeath || TargetIsDead)
             {
                 // As there is a function "Weapon.PreFireWeapon()" which substracts Ammo before the weapon actually fired we need to re-add it here!
-                // @ToDo: Check if heat needs to be substracted again, too...
                 foreach (Weapon w in ___requestedWeapons)
                 {
                     w.IncrementAmmo();
                 }
+
+                // As the prepared weapon sequence will get interrupted, we need to apply resolve changes manually
+                int resolveValue = (MeleeTarget as AbstractActor).GetResolveValue();
+                Logger.Info($"[MechMeleeSequence_FireWeapons_PREFIX] resolveValue: {resolveValue}");
+                actor.team.ModifyMorale(resolveValue);
 
                 ___requestedWeapons.Clear();
                 actor.Combat.MessageCenter.PublishMessage(new FloatieMessage(actor.GUID, actor.GUID, "SUSPENDED SUPPORT WEAPONS", FloatieMessage.MessageNature.Neutral));
@@ -93,18 +101,30 @@ namespace DontShootTheDead
             }
 
             AbstractActor actor = __instance.owningActor;
-            ICombatant DFATarget = (ICombatant)AccessTools.Property(typeof(MechDFASequence), "DFATarget").GetValue(__instance, null);
+            //ICombatant DFATarget = (ICombatant)AccessTools.Property(typeof(MechDFASequence), "DFATarget").GetValue(__instance, null);
+            ICombatant DFATarget = __instance.DFATarget;
 
-            bool TargetIsAlreadyDead = DFATarget.IsFlaggedForDeath;
-            Logger.Info("[MechDFASequence_FireWeapons_PREFIX] TargetIsAlreadyDead: " + TargetIsAlreadyDead);
+            bool TargetIsFlaggedForDeath = DFATarget.IsFlaggedForDeath;
+            bool TargetIsDead = DFATarget.IsDead;
 
-            if (TargetIsAlreadyDead)
+            Logger.Info("[MechDFASequence_FireWeapons_PREFIX] TargetIsFlaggedForDeath: " + TargetIsFlaggedForDeath);
+            Logger.Info("[MechDFASequence_FireWeapons_PREFIX] TargetIsDead: " + TargetIsDead);
+
+            if (TargetIsFlaggedForDeath || TargetIsDead)
             {
+                // As there is a function "Weapon.PreFireWeapon()" which substracts Ammo before the weapon actually fired we need to re-add it here!
+                foreach (Weapon w in ___requestedWeapons)
+                {
+                    w.IncrementAmmo();
+                }
+
+                // As the prepared weapon sequence will get interrupted, we need to apply resolve changes manually
+                int resolveValue = (DFATarget as AbstractActor).GetResolveValue();
+                Logger.Info($"[MechMeleeSequence_FireWeapons_PREFIX] resolveValue: {resolveValue}");
+                actor.team.ModifyMorale(resolveValue);
+
                 ___requestedWeapons.Clear();
                 actor.Combat.MessageCenter.PublishMessage(new FloatieMessage(actor.GUID, actor.GUID, "SUSPENDED SUPPORT WEAPONS", FloatieMessage.MessageNature.Neutral));
-
-                // @ToDo: Re-Add Ammo which was substracted early at Weapon.PreFire()
-                // @ToDo: Check if heat needs to be substracted too... ()
             }
         }
     }

@@ -2,7 +2,7 @@
     "Name": "DontShootTheDead",
     "Enabled": true,
 
-    "Version": "1.9.1-001R",
+    "Version": "1.9.1-002R",
     "Description": "Mechs won't waste heat or ammo on already killed targets while in melee.",
     "Author": "Mad",
 	
