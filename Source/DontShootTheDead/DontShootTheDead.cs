@@ -111,10 +111,12 @@ namespace DontShootTheDead
             AbstractActor actor = __instance.owningActor;
             ICombatant MeleeTarget = __instance.MeleeTarget;
 
+            bool TargetIsDead = MeleeTarget.IsDead;
             bool TargetIsFlaggedForDeath = MeleeTarget.IsFlaggedForDeath;
+            Logger.Info("[MechMeleeSequence_OnMeleeComplete_PREFIX] TargetIsDead: " + TargetIsDead);
             Logger.Info("[MechMeleeSequence_OnMeleeComplete_PREFIX] TargetIsFlaggedForDeath: " + TargetIsFlaggedForDeath);
 
-            if (TargetIsFlaggedForDeath)
+            if (TargetIsDead || TargetIsFlaggedForDeath)
             {
                 ___requestedWeapons.Clear();
                 actor.Combat.MessageCenter.PublishMessage(new FloatieMessage(actor.GUID, actor.GUID, "SUSPENDED SUPPORT WEAPONS", FloatieMessage.MessageNature.Neutral));
@@ -141,10 +143,12 @@ namespace DontShootTheDead
             AbstractActor actor = __instance.owningActor;
             ICombatant MeleeTarget = __instance.DFATarget;
 
+            bool TargetIsDead = MeleeTarget.IsDead;
             bool TargetIsFlaggedForDeath = MeleeTarget.IsFlaggedForDeath;
-            Logger.Info("[MechDFASequence_OnMeleeComplete_PREFIX] TargetIsFlaggedForDeath: " + TargetIsFlaggedForDeath);
+            Logger.Info("[MechMeleeSequence_OnMeleeComplete_PREFIX] TargetIsDead: " + TargetIsDead);
+            Logger.Info("[MechMeleeSequence_OnMeleeComplete_PREFIX] TargetIsFlaggedForDeath: " + TargetIsFlaggedForDeath);
 
-            if (TargetIsFlaggedForDeath)
+            if (TargetIsDead || TargetIsFlaggedForDeath)
             {
                 ___requestedWeapons.Clear();
                 actor.Combat.MessageCenter.PublishMessage(new FloatieMessage(actor.GUID, actor.GUID, "SUSPENDED SUPPORT WEAPONS", FloatieMessage.MessageNature.Neutral));
